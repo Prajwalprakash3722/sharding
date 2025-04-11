@@ -1,6 +1,6 @@
 # Sharding
 
-> this is me trying to debug large scale database designs and scalable stuff :)
+> This is me trying to figure out how to scale big databases without losing my mind.
 
 ## What is Sharding?
 
@@ -10,7 +10,7 @@ Sharding is the process of **splitting ordered data horizontally across multiple
 
 ## How Does Sharding Work?
 
-There are several sharding patterns used in practice. Here are some commonly used approaches:
+There’s no single "best" way to shard—depends on your use case. But here are a few common patterns:
 
 ### 1. Sharding Based on Time (e.g., Months or Quarters)
 
@@ -39,4 +39,14 @@ There are several sharding patterns used in practice. Here are some commonly use
 - Result: User with ID 0af9758d-8bcc-4248-b182-e7cc8aa948de is assigned to shard 1 → user_shard1
 ```
 
-so this repo aims to give an insight into how a developer might want to split up the data
+#### But Wait—What About Cleanup?
+
+Can’t just let data pile up forever. Cleaning millions of records = slow and expensive.
+
+##### Solution:
+Use sharding plus partitioning.
+Each shard can have internal partitions based on date or whatever makes sense for your data.
+- This lets you:
+  - Drop old partitions in seconds
+  - Keep table sizes small
+  - Speed up queries

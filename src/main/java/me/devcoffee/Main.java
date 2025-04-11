@@ -26,7 +26,7 @@ public class Main {
         User newUser = new User(uuid.toString(), "Prajwal P", LocalDate.ofYearDay(2025, 22));
 
         // hashing (most optimal way)
-        // but what about when we want to clean up the data, can't leave data forever, will be expansive to clean up
+        // but what about when we want to clean up the data, can't leave data forever, will be expensive to clean up
         // what we can do is let this bundle route to a correct shard
         // in each shard we can create partitions on basis of date, etc...
         // very useful for data life cycle management
