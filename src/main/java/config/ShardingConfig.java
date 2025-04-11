@@ -1,45 +1,56 @@
 package config;
 
-import lombok.Getter;
+import strategies.ShardingStrategy;
 
 import java.util.function.Function;
 
-@Getter
 public class ShardingConfig<T> {
-    private final int shardCount;
+    private final ShardingStrategy<T> strategy;
     private final Function<Integer, String> shardUrlProvider;
-    private final Function<T, String> keySelector;
 
     private ShardingConfig(int shardCount,
-                           Function<Integer, String> shardUrlProvider,
-                           Function<T, String> keySelector) {
-        this.shardCount = shardCount;
+                           ShardingStrategy<T> strategy,
+                           Function<Integer, String> shardUrlProvider) {
+        this.strategy = strategy;
         this.shardUrlProvider = shardUrlProvider;
-        this.keySelector = keySelector;
+    }
+
+    public int determineShard(T entity) {
+        return strategy.getShardId(entity);
+    }
+
+    public String getShardUrl(int shardId) {
+        return shardUrlProvider.apply(shardId);
     }
 
     public static class Builder<T> {
         private int shardCount;
+        private ShardingStrategy<T> strategy;
         private Function<Integer, String> shardUrlProvider;
-        private Function<T, String> keySelector;
 
         public Builder<T> withShardCount(int count) {
             this.shardCount = count;
             return this;
         }
 
-        public Builder<T> withShardUrl(Function<Integer, String> provider) {
+        public Builder<T> withShardingStrategy(ShardingStrategy<T> strategy) {
+            this.strategy = strategy;
+            return this;
+        }
+
+        public Builder<T> withShardUrlProvider(Function<Integer, String> provider) {
             this.shardUrlProvider = provider;
             return this;
         }
 
-        public Builder<T> withKeySelector(Function<T, String> selector) {
-            this.keySelector = selector;
-            return this;
-        }
-
-        public ShardingConfig<T> build() {
-            return new ShardingConfig<>(shardCount, shardUrlProvider, keySelector);
+        public ShardingConfig<T> build() throws Exception {
+            if (strategy == null) {
+                throw new Exception("Sharding strategy must be provided");
+            }
+            if (shardUrlProvider == null) {
+                throw new Exception("Shard URL provider must be provided");
+            }
+            return new ShardingConfig<>(shardCount, strategy, shardUrlProvider);
         }
     }
 }

@@ -38,3 +38,5 @@ There are several sharding patterns used in practice. Here are some commonly use
 - Apply the hash function on the user ID
 - Result: User with ID 0af9758d-8bcc-4248-b182-e7cc8aa948de is assigned to shard 1 → user_shard1
 ```
+
+so this repo aims to give an insight into how a developer might want to split up the data
