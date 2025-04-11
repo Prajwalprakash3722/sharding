@@ -1,19 +1,16 @@
 package me.devcoffee;
 
 import config.ShardingConfig;
-import dao.User;
 import strategies.HashingShardingStrategy;
 
-import java.time.LocalDate;
 import java.util.UUID;
 import java.util.function.Function;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        Function<User, String> userIdExtractor = User::getId;
-
-
+        record User(String id, String name) {}
+        Function<User, String> userIdExtractor = user -> user.id();
         HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>(userIdExtractor);
 
         // ideally these configs must come from a distributed storage, so that you don't have to stop the instance just to scale up / down / even blacklist the shards
@@ -23,7 +20,7 @@ public class Main {
 
         ShardingConfig<User> hashingConfig = new ShardingConfig.Builder<User>().withShardCount(shardCount).withShardingStrategy(hashingStrategy).withShardUrlProvider(urlProvider).build();
         UUID uuid = UUID.randomUUID();
-        User newUser = new User(uuid.toString(), "Prajwal P", LocalDate.ofYearDay(2025, 22));
+        User newUser = new User(uuid.toString(), "Prajwal P");
 
         // hashing (most optimal way)
         // but what about when we want to clean up the data, can't leave data forever, will be expensive to clean up
