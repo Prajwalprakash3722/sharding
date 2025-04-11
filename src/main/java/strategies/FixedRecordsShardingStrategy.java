@@ -12,9 +12,9 @@ public class FixedRecordsShardingStrategy<T> implements ShardingStrategy<T> {
     }
 
     @Override
-    public int getShardId(T entity) {
+    public int getShardId(T entity, Integer shardCount) {
         int recordNumber = recordNumberExtractor.apply(entity);
-        return (int) Math.ceil((double) recordNumber / recordsPerShard);
+        return (int) Math.ceil((double) recordNumber / recordsPerShard) % shardCount;
     }
 }
 

@@ -6,15 +6,13 @@ import java.util.function.Function;
 
 public class HashingShardingStrategy<T> implements ShardingStrategy<T> {
     private final Function<T, String> keyExtractor;
-    private final int shardCount;
 
-    public HashingShardingStrategy(Function<T, String> keyExtractor, int shardCount) {
+    public HashingShardingStrategy(Function<T, String> keyExtractor) {
         this.keyExtractor = keyExtractor;
-        this.shardCount = shardCount;
     }
 
     @Override
-    public int getShardId(T entity) {
+    public int getShardId(T entity, Integer shardCount) {
         String key = keyExtractor.apply(entity);
         // Compute 128-bit hash and then convert it to a 32-bit integer for modulus
         int hash = Hashing.murmur3_128().hashString(key, StandardCharsets.UTF_8).asInt();

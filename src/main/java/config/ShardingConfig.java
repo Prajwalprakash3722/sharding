@@ -7,20 +7,26 @@ import java.util.function.Function;
 public class ShardingConfig<T> {
     private final ShardingStrategy<T> strategy;
     private final Function<Integer, String> shardUrlProvider;
-
+    // not final, because this can be changed at any point of time
+    private Integer shardCount;
     private ShardingConfig(int shardCount,
                            ShardingStrategy<T> strategy,
                            Function<Integer, String> shardUrlProvider) {
+        this.shardCount = shardCount;
         this.strategy = strategy;
         this.shardUrlProvider = shardUrlProvider;
     }
 
     public int determineShard(T entity) {
-        return strategy.getShardId(entity);
+        return strategy.getShardId(entity, this.shardCount);
     }
 
     public String getShardUrl(int shardId) {
         return shardUrlProvider.apply(shardId);
+    }
+
+    public void updateShardCount(int shardCount){
+        this.shardCount = shardCount;
     }
 
     public static class Builder<T> {
