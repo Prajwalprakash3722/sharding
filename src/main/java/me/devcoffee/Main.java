@@ -18,7 +18,7 @@ public class Main {
         Function<User, String> userIdExtractor = user -> user.id();
         HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>(userIdExtractor);
         ShardUrlProvider shardUrlProvider = new YamlShardUrlProvider("config.yaml");
-        ShardUrlProvider redisUrlProvider = new RedisShardUrlProvider(new Jedis("stg-ppsde002.phonepe.mh6", 6379), "config.yaml");
+        ShardUrlProvider redisUrlProvider = new RedisShardUrlProvider(new Jedis("localhost", 6379), "config.yaml");
         int shardCount = 16;
 
         ShardingConfig<User> hashingConfig = new ShardingConfig.Builder<User>().withShardCount(shardCount).withShardingStrategy(hashingStrategy).withShardUrlProvider(redisUrlProvider).build();

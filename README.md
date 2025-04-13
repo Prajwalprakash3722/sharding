@@ -66,7 +66,7 @@ public class Main {
         // yaml shardProvider (read down below to know more about this)
         ShardUrlProvider shardUrlProvider = new YamlShardUrlProvider("config.yaml");
         // redis shardProvider (read down below to know more about this)
-        ShardUrlProvider redisUrlProvider = new RedisShardUrlProvider(new Jedis("stg-ppsde002.phonepe.mh6", 6379), "config.yaml");
+        ShardUrlProvider redisUrlProvider = new RedisShardUrlProvider(new Jedis("localhost", 6379), "config.yaml");
         // total no of shards
         int shardCount = 16;
 
