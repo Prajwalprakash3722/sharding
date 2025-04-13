@@ -1,11 +1,12 @@
 package me.devcoffee;
 
-import config.ShardingConfig;
-import strategies.HashingShardingStrategy;
+import me.devcoffee.config.ShardingConfig;
+import me.devcoffee.strategies.HashingShardingStrategy;
 
 import java.util.UUID;
 import java.util.function.Function;
 
+// following is a example of how to use this package
 public class Main {
     public static void main(String[] args) throws Exception {
 
@@ -13,8 +14,6 @@ public class Main {
         Function<User, String> userIdExtractor = user -> user.id();
         HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>(userIdExtractor);
 
-        // ideally these configs must come from a distributed storage, so that you don't have to stop the instance just to scale up / down / even blacklist the shards
-        // something like redis / Memq would suffice
         Function<Integer, String> urlProvider = shardId -> "http://localhost:3306/user_shard_" + shardId + "?user=root&password=root";
         int shardCount = 64;
 
@@ -22,19 +21,14 @@ public class Main {
         UUID uuid = UUID.randomUUID();
         User newUser = new User(uuid.toString(), "Prajwal P");
 
-        // hashing (most optimal way)
-        // but what about when we want to clean up the data, can't leave data forever, will be expensive to clean up
-        // what we can do is let this bundle route to a correct shard
-        // in each shard we can create partitions on basis of date, etc...
-        // very useful for data life cycle management
-        // competitively faster as there are smaller tables
 
         int shardId = hashingConfig.determineShard(newUser);
         String shardUrl = hashingConfig.getShardUrl(shardId);
         System.out.println("User will be inserted into shard " + shardId + " if we use HashBased Strategy with endpoint " + shardUrl);
+        // if you change the shard count, all data must be rehashed to map to the new shards, very expensive, so plan your capacity very carefully
         hashingConfig.updateShardCount(6);
         shardId = hashingConfig.determineShard(newUser);
         shardUrl = hashingConfig.getShardUrl(shardId);
-        System.out.println("User will be inserted into shard " + shardId + " if we use HashBased Strategy with endpoint " + shardUrl);
+        System.out.println("User will be inserted into shard " + shardId + " if we use HashBased Strategy after updating the shardCount with endpoint " + shardUrl);
     }
 }

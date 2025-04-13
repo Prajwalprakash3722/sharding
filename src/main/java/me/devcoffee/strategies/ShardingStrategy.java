@@ -1,4 +1,4 @@
-package strategies;
+package me.devcoffee.strategies;
 
 // All strategies must implement this interface
 public interface ShardingStrategy<T> {

@@ -1,6 +1,6 @@
-package config;
+package me.devcoffee.config;
 
-import strategies.ShardingStrategy;
+import me.devcoffee.strategies.ShardingStrategy;
 
 import java.util.function.Function;
 

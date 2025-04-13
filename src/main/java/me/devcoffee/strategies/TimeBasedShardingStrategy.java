@@ -1,4 +1,4 @@
-package strategies;
+package me.devcoffee.strategies;
 
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
