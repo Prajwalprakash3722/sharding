@@ -1,0 +1,3 @@
+shards:
+  user_shard{1..8}: node1.localhost
+  user_shard{9..16}: node2.localhost

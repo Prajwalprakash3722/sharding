@@ -2,6 +2,7 @@ package me.devcoffee.strategies;
 
 import java.util.function.Function;
 
+@Deprecated
 public class FixedRecordsShardingStrategy<T> implements ShardingStrategy<T> {
     private final Function<T, Integer> recordNumberExtractor;
     private final int recordsPerShard;

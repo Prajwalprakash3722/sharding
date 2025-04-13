@@ -18,8 +18,8 @@ public class HashingShardingStrategy<T> implements ShardingStrategy<T> {
         int hash = Hashing.murmur3_128().hashString(key, StandardCharsets.UTF_8).asInt();
         // Ensure a positive value before modulus
         hash = Math.abs(hash);
-        // Make sure that hash is less than shardCount
-        return hash % shardCount;
+        // Make sure that hash is less than shardCount and always return 1 if the hash %  shardCount is 0
+        return Math.max(1, hash % shardCount);
     }
 }
 

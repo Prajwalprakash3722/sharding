@@ -1,23 +1,27 @@
 package me.devcoffee;
 
+import me.devcoffee.config.RedisShardUrlProvider;
+import me.devcoffee.config.ShardUrlProvider;
+import me.devcoffee.config.YamlShardUrlProvider;
 import me.devcoffee.config.ShardingConfig;
 import me.devcoffee.strategies.HashingShardingStrategy;
+import redis.clients.jedis.Jedis;
 
 import java.util.UUID;
 import java.util.function.Function;
 
-// following is a example of how to use this package
+// following is an example of how to use this package
 public class Main {
     public static void main(String[] args) throws Exception {
 
         record User(String id, String name) {}
         Function<User, String> userIdExtractor = user -> user.id();
         HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>(userIdExtractor);
+        ShardUrlProvider shardUrlProvider = new YamlShardUrlProvider("config.yaml");
+        ShardUrlProvider redisUrlProvider = new RedisShardUrlProvider(new Jedis("stg-ppsde002.phonepe.mh6", 6379), "config.yaml");
+        int shardCount = 16;
 
-        Function<Integer, String> urlProvider = shardId -> "http://localhost:3306/user_shard_" + shardId + "?user=root&password=root";
-        int shardCount = 64;
-
-        ShardingConfig<User> hashingConfig = new ShardingConfig.Builder<User>().withShardCount(shardCount).withShardingStrategy(hashingStrategy).withShardUrlProvider(urlProvider).build();
+        ShardingConfig<User> hashingConfig = new ShardingConfig.Builder<User>().withShardCount(shardCount).withShardingStrategy(hashingStrategy).withShardUrlProvider(redisUrlProvider).build();
         UUID uuid = UUID.randomUUID();
         User newUser = new User(uuid.toString(), "Prajwal P");
 

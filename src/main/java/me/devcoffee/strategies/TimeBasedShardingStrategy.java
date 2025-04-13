@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.util.function.Function;
 
+@Deprecated
 public class TimeBasedShardingStrategy<T> implements ShardingStrategy<T> {
     private final Function<T, LocalDate> dateExtractor;
     private final int shardsPerYear;
