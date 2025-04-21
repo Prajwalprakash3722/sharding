@@ -55,12 +55,14 @@ Each shard can have internal partitions based on date or whatever makes sense fo
 ### Example
 
 ```java
+import me.devcoffee.annotations.ShardKey;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         // this is your data schema (POJO)
-        record User(String id, String name) {}
-        // this is your key extractor to submit to the hashing method
-        Function<User, String> userIdExtractor = user -> user.id();
+        // @ShardKey is your DAO's sharding key, use this to set and get data
+        record User(@ShardKey String id, String name) {
+        }
         // this is your strategy
         HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>(userIdExtractor);
         // yaml shardProvider (read down below to know more about this)
@@ -71,11 +73,10 @@ public class Main {
         int shardCount = 16;
 
         ShardingConfig<User> hashingConfig = new ShardingConfig.Builder<User>().withShardCount(shardCount).withShardingStrategy(hashingStrategy).withShardUrlProvider(redisUrlProvider).build();
-        
+
         UUID uuid = UUID.randomUUID();
         User newUser = new User(uuid.toString(), "Prajwal P");
-
-
+        
         int shardId = hashingConfig.determineShard(newUser);
         String shardUrl = hashingConfig.getShardUrl(shardId);
         System.out.println("User will be inserted into shard " + shardId + " if we use HashBased Strategy with endpoint " + shardUrl);
