@@ -64,7 +64,7 @@ public class Main {
         record User(@ShardKey String id, String name) {
         }
         // this is your strategy
-        HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>(userIdExtractor);
+        HashingShardingStrategy<User> hashingStrategy = new HashingShardingStrategy<>();
         // yaml shardProvider (read down below to know more about this)
         ShardUrlProvider shardUrlProvider = new YamlShardUrlProvider("config.yaml");
         // redis shardProvider (read down below to know more about this)
