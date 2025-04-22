@@ -26,8 +26,11 @@ public class Main {
 
         System.out.println("User will be inserted into shard " + shardId + " if we use HashBased Strategy with endpoint " + shardUrl);
         // if you change the shard count, all data must be rehashed to map to the new shards, very expensive, so plan your capacity very carefully
+        // TODO, implement a way to rehash the data
+        // ? what should we do if a shard goes down?, we can blacklist it but ofc it will affect the count, need to think a bit here
         hashingConfig.updateShardCount(6);
         shardId = hashingConfig.determineShard(newUser);
+        shardUrl = hashingConfig.getShardUrl(shardId);
         System.out.println("User will be inserted into shard " + shardId + " if we use HashBased Strategy after updating the shardCount with endpoint " + shardUrl);
     }
 }
